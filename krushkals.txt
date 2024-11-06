@@ -1,0 +1,81 @@
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
+
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
+
+    def find(self, parent, i):
+        if parent[i] == i:
+            return i
+        return self.find(parent, parent[i])
+
+    def union(self, parent, rank, x, y):
+        xroot = self.find(parent, x)
+        yroot = self.find(parent, y)
+
+        if rank[xroot] < rank[yroot]:
+            parent[xroot] = yroot
+        elif rank[xroot] > rank[yroot]:
+            parent[yroot] = xroot
+        else:
+            parent[yroot] = xroot
+            rank[xroot] += 1
+
+    def kruskal_mst(self):
+        result = []  # To store the final MST
+        i, e = 0, 0  # Initialize variables for edges and index
+
+        # Sort all the edges in non-decreasing order of their weight
+        self.graph = sorted(self.graph, key=lambda item: item[2])
+
+        parent = []
+        rank = []
+
+        # Create V subsets with single elements
+        for node in range(self.V):
+            parent.append(node)
+            rank.append(0)
+
+        # Number of edges to be taken is equal to V-1
+        while e < self.V - 1:
+            # Pick the smallest edge and increment the index for the next iteration
+            u, v, w = self.graph[i]
+            i += 1
+            x = self.find(parent, u)
+            y = self.find(parent, v)
+
+            # If including this edge does not cause a cycle, include it in the result
+            # and increment the number of edges included in the MST
+            if x != y:
+                e += 1
+                result.append([u, v, w])
+                self.union(parent, rank, x, y)
+
+        # Print the constructed MST
+        minimumCost = 0
+        print("Edges in the constructed MST:")
+        for u, v, weight in result:
+            minimumCost += weight
+            print("%d -- %d == %d" % (u, v, weight))
+        print("Minimum Spanning Tree Cost:", minimumCost)
+
+
+def main():
+    num_vertices = int(input("Enter the number of vertices: "))
+    num_edges = int(input("Enter the number of edges: "))
+
+    g = Graph(num_vertices)
+
+    for i in range(num_edges):
+        u = int(input(f"Enter source vertex for edge {i + 1}: "))
+        v = int(input(f"Enter destination vertex for edge {i + 1}: "))
+        w = int(input(f"Enter weight for edge {i + 1}: "))
+        g.add_edge(u, v, w)
+
+    g.kruskal_mst()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,34 @@
+def job_scheduling(jobs, deadlines):
+    jobs.sort(key=lambda x: x[1], reverse=True)
+    scheduled_jobs = [None] * max(deadlines)
+    max_profit = 0
+
+    for job in jobs:
+        for i in range(job[2] - 1, -1, -1):
+            if scheduled_jobs[i] is None:
+                scheduled_jobs[i] = job[0]
+                max_profit += job[1]
+                break
+
+    return scheduled_jobs, max_profit
+
+def main():
+    num_jobs = int(input("Enter the number of jobs: "))
+    jobs = []
+
+    for i in range(num_jobs):
+        job_id = int(input(f"Enter job ID {i+1}: "))
+        profit = int(input(f"Enter profit for job {job_id}: "))
+        deadline = int(input(f"Enter deadline for job {job_id}: "))
+        jobs.append((job_id, profit, deadline))
+
+    scheduled_jobs, max_profit = job_scheduling(jobs, [job[2] for job in jobs])
+
+    print("Scheduled Jobs:")
+    for i in range(len(scheduled_jobs)):
+        if scheduled_jobs[i] is not None:
+            print(f"Job {scheduled_jobs[i]} is scheduled at time {i+1}")
+    print(f"Maximum Profit: {max_profit}")
+
+if __name__ == "__main__":
+    main()

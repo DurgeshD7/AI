@@ -1,0 +1,63 @@
+def dijkstra(graph, source):
+    # Initialize distances dictionary with 'infinity' for all nodes except the source
+    distances = {node: float('inf') for node in graph}
+    distances[source] = 0
+    previous = {node: None for node in graph}
+    unvisited_nodes = list(graph.keys())
+    
+    while unvisited_nodes:
+        # Select the unvisited node with the smallest distance
+        current_node = min(unvisited_nodes, key=lambda node: distances[node])
+        unvisited_nodes.remove(current_node)
+
+        for neighbor, weight in graph[current_node].items():
+            distance = distances[current_node] + weight
+            if distance < distances[neighbor]:  # Update distance if a shorter path is found
+                distances[neighbor] = distance
+                previous[neighbor] = current_node
+
+    return distances, previous
+
+def main():
+    # Get the number of nodes from the user
+    num_nodes = int(input("Enter the number of nodes: "))
+    
+    # Build the graph from user input
+    graph = {}
+    for i in range(num_nodes):
+        node = int(input(f"Enter node {i + 1}: "))
+        neighbors = {}
+        num_neighbors = int(input(f"Enter the number of neighbors for node {node}: "))
+        
+        for j in range(num_neighbors):
+            neighbor = int(input(f"Enter neighbor {j + 1} for node {node}: "))
+            weight = int(input(f"Enter the weight for edge ({node}, {neighbor}): "))
+            neighbors[neighbor] = weight
+        
+        graph[node] = neighbors
+
+    # Get the source node from the user
+    source = int(input("Enter the source node: "))
+
+    # Run Dijkstra's algorithm
+    distances, previous = dijkstra(graph, source)
+
+    # Print the shortest distances
+    print("Shortest Distances:")
+    for node, distance in distances.items():
+        print(f"{source} -> {node}: {distance}")
+
+    # Print the shortest paths
+    print("Shortest Paths:")
+    for node in graph:
+        if node != source:
+            path = []
+            current_node = node
+            while current_node is not None:
+                path.append(current_node)
+                current_node = previous[current_node]
+            path.reverse()
+            print(f"{source} -> {node}: {' -> '.join(map(str, path))}")
+
+if __name__ == "__main__":
+    main()

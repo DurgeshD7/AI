@@ -1,0 +1,29 @@
+def prim(graph, start):
+    mst = []
+    visited = [False] * len(graph)
+    visited[start] = True
+    edges = []
+    for i in range(len(graph)):
+        for j in range(i+1, len(graph)):
+            if graph[i][j] != 0:
+                edges.append((graph[i][j], i, j))
+    edges.sort()
+    for edge in edges:
+        weight, node1, node2 = edge
+        if visited[node1] != visited[node2]:
+            mst.append(edge)
+            if not visited[node1]:
+                visited[node1] = True
+            if not visited[node2]:
+                visited[node2] = True
+    return mst
+
+graph = [[0, 2, 0, 6, 0],
+         [2, 0, 3, 8, 5],
+         [0, 3, 0, 0, 7],
+         [6, 8, 0, 0, 9],
+         [0, 5, 7, 9, 0]]
+
+mst = prim(graph, 0)
+for edge in mst:
+    print(edge)
